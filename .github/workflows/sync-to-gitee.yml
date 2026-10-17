@@ -1,0 +1,22 @@
+name: Sync to Gitee
+on:
+  push:
+    branches: [ master ]          # 注意：如果官方仓库的主分支叫 master，请把 main 改成 master
+  schedule:
+    - cron: '0 0,6,12,18 * * *' # 每天 0点、6点、12点、18点自动同步一次，防止漏掉
+  workflow_dispatch:            # 允许你在网页上手动点击运行
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mirror to Gitee
+        uses: Yikun/hub-mirror-action@master
+        with:
+          src: 'github/deepseek-ai'      # 官方账户
+          dst: 'gitee/linkonglu'         # 你的 Gitee 账户（已填好）
+          dst_key: ${{ secrets.GITEE_PRIVATE_KEY }}
+          dst_token: ${{ secrets.GITEE_TOKEN }}
+          static_list: 'deepseek-harness'  # 将同步到 Gitee 的这个仓库名下（如果不存在会自动创建）
+          force_update: true
+          debug: true
